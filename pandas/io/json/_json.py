@@ -89,6 +89,7 @@ def to_json(
     index: bool = True,
     indent: int = 0,
     storage_options: StorageOptions = None,
+    drop_na: bool = False,
 ):
 
     if not index and orient not in ["split", "table"]:
@@ -122,6 +123,7 @@ def to_json(
         default_handler=default_handler,
         index=index,
         indent=indent,
+        drop_na=drop_na,
     ).write()
 
     if lines:
@@ -151,6 +153,7 @@ class Writer(ABC):
         index: bool,
         default_handler: Optional[Callable[[Any], JSONSerializable]] = None,
         indent: int = 0,
+        drop_na: bool = False,
     ):
         self.obj = obj
 
@@ -165,6 +168,7 @@ class Writer(ABC):
         self.default_handler = default_handler
         self.index = index
         self.indent = indent
+        self.drop_na = drop_na
 
         self.is_copy = None
         self._format_axes()
@@ -183,6 +187,7 @@ class Writer(ABC):
             iso_dates=iso_dates,
             default_handler=self.default_handler,
             indent=self.indent,
+            drop_none=self.drop_na,
         )
 
     @property
